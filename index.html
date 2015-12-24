@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="lt-ie9 lt-ie8 lt-ie7" lang="de" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml"><![endif]-->
+<!--[if IE 7]><html class="lt-ie9 lt-ie8" lang="de" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml"><![endif]-->
+<!--[if IE 8]><html class="lt-ie9" lang="de" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml"><![endif]-->
+<!--[if gt IE 8]><!--><html lang="de" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml"><!--<![endif]-->
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<link rel="stylesheet" type="text/css" href="css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+
+        <script type="text/javascript" src="js/async-image-loading.js"></script>
+    </head>
+    <body>
+		<figure id="figure" data-image-url="images/samplex.jpg">
+			<figcaption></figcaption>
+		</figure>
+
+        <script type="text/javascript">
+			var figure = document.getElementById('figure');
+			var figcaption = figure.firstChild;
+
+			var progressBar;
+
+			var imageUrl = (figure.dataset ? figure.dataset.imageUrl : figure.getAttribute('data-image-url'));
+			var image = new Image();
+
+			image.addEventListener('asyncLoadImageStart', function(evt) {
+				console.log('asyncLoadImageStart');
+
+				progressBar = document.createElement('div');
+				progressBar.setAttribute('class', 'progress-bar');
+				figure.insertBefore(progressBar, figcaption);
+			});
+
+			image.addEventListener('asyncLoadImageProgress', function(evt) {
+				console.log('asyncLoadImageProgress');
+
+				var width = parseInt((evt.loaded / evt.total) * 100);
+				if (progressBar) {
+					progressBar.style.width = width + '%';
+				}
+				progressBar.innerHTML = width + '%';
+			});
+
+			image.addEventListener('asyncLoadImageLoaded', function(evt) {
+				console.log('asyncLoadImageLoaded');
+
+				figure.insertBefore(image, figcaption);
+			});
+
+			image.addEventListener('asyncLoadImageFinished', function(evt) {
+				console.log('asyncLoadImageFinished');
+
+				if (progressBar) {
+					figure.removeChild(progressBar);
+				}
+			});
+
+			image.addEventListener('asyncLoadImageError', function(evt) {
+			    console.log('Error: ', evt.message);
+			});
+			image.asyncLoadImage(imageUrl);
+        </script>
+    </body>
+</html>
